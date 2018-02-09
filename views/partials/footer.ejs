@@ -1,0 +1,41 @@
+	<script>
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("btn-to-top").style.display = "block";
+    } else {
+        document.getElementById("btn-to-top").style.display = "none";
+    }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+
+//toggle-navbar-menu
+$(".nav-hamburger").on("click",toggleMenu);
+
+function toggleMenu(){
+  $(".nav-menu ul").toggleClass("open");
+}
+
+//hamburger animation
+$(document).ready(function(){
+	$('.nav-hamburger').click(function(){
+		$(this).toggleClass('open');
+	});
+});
+
+//flash animation
+setTimeout(function() {
+    $('.alert').fadeOut('fast');
+}, 3000);
+
+
+</script>
+	</body>
+</html>

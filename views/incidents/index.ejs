@@ -1,0 +1,39 @@
+<% include ../partials/header %>
+<div class="container">
+	<h1 class="index-header-text">INFRACTION TIMER</h1>
+	<div class="container-index">
+		<table class="table">
+			<col width="300">
+			<col width="500">
+			<col width="250">
+			<col width="150">
+			<col width="200">
+			<col width="200">
+			<tr>
+				<th>Incident Number</th>
+				<th>Title</th>
+				<th>Owner</th>
+				<th>Status</th>
+				<th>Created</th>
+				<th>Due</th>
+			</tr>
+			<% incidents.reverse().forEach(function(incident){%>
+			<% if(currentUser && (currentUser.name+" "+currentUser.lname === incident.owner || currentUser._id.equals(incident.createdBy.id))) {%>
+			<tr class="text-center">
+				<td><a href="incidents/<%= incident._id %>" class="incident-link"><%=incident._id%></a></td>
+				<td><a href="incidents/<%= incident._id %>"  class="incident-link"><%=incident.title%></a></td>
+				<td><%=incident.owner%></td>
+				<td><%=incident.status%></td>
+				<td><%=incident.date.toDateString().replace(/^\S+\s/,'')%></td>
+				<td><%=incident.deadline.toDateString().replace(/^\S+\s/,'')%></td>
+				
+			</tr>
+			<% } %>
+			<% }); %>
+		</table>
+	</div>	
+</div>
+<% if(currentUser && (currentUser.role === "manager")) {%>
+<div class="btn-incident"><a href="/incidents/new">+</a></div>
+<% } %>
+<% include ../partials/footer %>	

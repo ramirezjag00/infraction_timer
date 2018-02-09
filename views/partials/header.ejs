@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Infraction Timer</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+	<link rel="stylesheet" type="text/css" href="/stylesheets/app.css">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+	<button onclick="topFunction()" id="btn-to-top" title="Go to top">Top</button>
+	<header class="navbar">
+		<div class="navbar-header">
+			<a class="nav-logo" href="/">I</a>
+			<button class="nav-hamburger">
+				<span class="nav-stripe"></span>
+				<span class="nav-stripe"></span>
+				<span class="nav-stripe"></span>
+			</button>
+		</div>
+		<nav class="nav-menu">
+			<ul>
+				<% if(!currentUser){ %>
+					<li><a href="/login">Log In</a></li>
+					<li><a href="/register">Sign Up</a></li>
+					<% } else { %>
+
+					<li><a href="#"><%= currentUser.name %> <%= currentUser.lname %></a></li>
+					<li><a href="#"><%= currentUser._id %></a></li>
+					<li><a href="/logout">Log Out</a></li>
+					<% } %>
+			</ul>
+		</nav>
+	</header>
+	<div class="container">
+		<% if (error && error.length > 0){%>
+		<div class="alert index-header-text">
+			<%= error %>
+		</div> 
+		<% } %>
+		<% if (success && success.length > 0){%>
+		<div class="alert success index-header-text">
+			<%= success %>	
+		</div>
+		<% } %>
+	</div>

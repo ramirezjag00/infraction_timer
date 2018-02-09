@@ -1,0 +1,31 @@
+<% include ../partials/header %>
+<div class="container">
+	<h1 class="text-center"><%= incident.title %></h1>
+	<h4 class="text-center">Incident # <%= incident._id %></h4>
+	<h4 class="text-center">Owner: <%= incident.owner %></h4>
+	<div class="text-center"><h4>Description: </h4><%= incident.description %></div>
+	<div class="text-center"><h4>Date:</h4> <%= incident.date.toDateString().replace(/^\S+\s/,'') %> - <%= incident.deadline.toDateString().replace(/^\S+\s/,'') %></div>
+	<div class="text-center"><h4>Time Remaining: </h4><span id="demo"></span></div>
+
+	<div class="text-center"><h4>Status: </h4><%= incident.status %></div>
+	
+
+</div>
+<script type="text/javascript">
+          var countDownDate = new Date("<%= incident.deadline%>").getTime();
+          var countdownfunction = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("demo").innerHTML =
+              days + "d " + hours + "h " + minutes + "m";
+          
+            if (distance < 0) {
+              clearInterval(countdownfunction);
+              document.getElementById("demo").innerHTML = "0";
+            }
+          }, 1000);
+        </script>
+<% include ../partials/footer %>
