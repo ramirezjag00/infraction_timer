@@ -1,2 +1,1 @@
-# infraction_timer
-Infraction Timer
+# Infraction Timer
