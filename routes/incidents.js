@@ -86,6 +86,41 @@ router.put("/:id", middleware.isLoggedIn, function(req,res) {
 	});
 });
 
+// //GET EDIT  INCIDENT ROUTE
+// router.get("/:id/edit", middleware.checkItemOwnership, function(req,res){
+// 	Item.findById(req.params.id, function(err, foundItem){
+// 		res.render("items/edit", {item: foundItem});	
+// 	});
+// });
+
+
+// //UPDATE STATUS ROUTE
+// router.put("/:id", middleware.isLoggedIn, function(req,res){
+// 	Item.findByIdAndUpdate(req.params.id, {$inc:{ 'bidPrice': 50}}, function(err, updatedItem){
+// 		if(err){
+// 			console.log(err);
+// 		} else {
+// 			res.redirect("/items/" + req.params.id);
+// 		}
+// 	});
+// });
+
+// //UPDATE INCIDENT ROUTE
+
+// router.put("/:id", middleware.checkItemOwnership, function(req,res){
+// 	//find and update the correct item
+// 	Item.findByIdAndUpdate(req.params.id, req.body.item, function(err, updatedItem){
+// 		if(err){
+// 			res.redirect("/items");
+// 		} else {
+// 			//redirect somewhere(show page)
+// 			res.redirect("/items/" + req.params.id);
+// 		}
+// 	})
+// });
+
+
+
 //DESTROY ROUTE
 router.delete("/:id", middleware.isLoggedIn, function(req,res) {
 	Incident.findByIdAndRemove(req.params.id, function(err){
