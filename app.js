@@ -22,7 +22,7 @@ const indexRoutes = require("./routes/index");
 // const deliverableRoutes = require("./routes/deliverables");
 
 //APP CONFIG
-mongoose.connect("mongodb://localhost/infraction_timer");
+mongoose.connect("mongodb://localhost/infraction_timer2");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
