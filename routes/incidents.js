@@ -13,14 +13,16 @@ router.get("/", middleware.isLoggedIn, function(req,res) {
 	//get all incidents from DB
 
 	Incident.find({}, function(err, allIncidents) {
-
-		if (err){ 
-			console.log(err);
-		} else {
-			res.render("incidents/index", {incidents: allIncidents});
-		}
+		User.find({}, function(err, allUsers){
+			if(err) {  
+				console.log(err);
+			} else {
+				res.render("incidents/index", {incidents: allIncidents, users: allUsers});
+			}
+		});
 	});
 });
+
 
 //CREATE ROUTE
 router.post("/", middleware.isLoggedIn, function(req,res) {
@@ -48,17 +50,16 @@ router.post("/", middleware.isLoggedIn, function(req,res) {
 });
 
 // NEW ROUTE
-// router.get("/new", middleware.isLoggedIn, (req,res) => res.render("incidents/new"));
 
-router.get("/new", middleware.isLoggedIn, function(req,res) {
-	User.find({}, function(err, allUsers){
-		if(err) {  
-			console.log(err);
-		} else {
-			res.render("incidents/new", {users: allUsers});
-		}
-	});
-});
+// router.get("/new", middleware.isLoggedIn, function(req,res) {
+// 	User.find({}, function(err, allUsers){
+// 		if(err) {  
+// 			console.log(err);
+// 		} else {
+// 			res.render("incidents/new", {users: allUsers});
+// 		}
+// 	});
+// });
 
 //SHOW - RESTFUL ROUTE
 router.get("/:id", middleware.isLoggedIn, function(req,res) {
@@ -72,9 +73,17 @@ router.get("/:id", middleware.isLoggedIn, function(req,res) {
 	});
 });
 
+// //GET EDIT  INCIDENT ROUTE
+// router.get("/:id/edit", middleware.checkIncidentOwnership, function(req,res){
+// 	Incident.findById(req.params.id, function(err, foundIncident){
+// 		res.render("incidents/edit", {incident: foundIncident});	
+// 	});
+// });
+
+
 //UPDATE ROUTE
 
-router.put("/:id", middleware.isLoggedIn, function(req,res) {
+router.put("/:id", middleware.checkIncidentOwnership, function(req,res) {
 	Incident.findByIdAndUpdate(req.params.id, req.body.incident, function(err, updatedIncident) {
 		if(err) {
 			req.flash("error", err.message);
@@ -86,13 +95,28 @@ router.put("/:id", middleware.isLoggedIn, function(req,res) {
 	});
 });
 
+
+// // //UPDATE STATUS ROUTE
+// router.put("/:id", middleware.checkIncidentOwnership, function(req,res){
+// 	Incident.findByIdAndUpdate(req.params.id, {$set:{status: done}}, function(err, updatedIncident){
+// 				if(err){
+// 					console.log(err);
+// 				} else {
+// 					req.flash("success", "Status update has been successful! Please notify the employee.");
+// 					res.redirect("/incidents/" + req.params.id);
+// 				}
+// 			});
+// });
+
+
+
 //DESTROY ROUTE
-router.delete("/:id", middleware.isLoggedIn, function(req,res) {
+router.delete("/:id", middleware.checkIncidentOwnership, function(req,res){
 	Incident.findByIdAndRemove(req.params.id, function(err){
-		if(err) {
-			res.redirect("/incidents");
+		if(err){
+			res.redirect("/indidents");
 		} else {
-			req.flash("success", "Item deleted!");
+			req.flash("success", "Incident deleted!");
 			res.redirect("/incidents");
 		}
 	});

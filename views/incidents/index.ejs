@@ -34,6 +34,71 @@
 	</div>	
 </div>
 <% if(currentUser && (currentUser.role === "manager")) {%>
-<div class="btn-incident"><a href="/incidents/new">+</a></div>
+<div class="btn-incident"><a id="add-incident-btn">+</a></div>
 <% } %>
+
+<!-- The Modal -->
+<div id="addIncidentModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="modal-close">&times;</span>
+ 	<div class="container">
+	<h1 class="index-header-text">Create an Incident</h1>
+	<div class="form-container">
+		<form action="/incidents" method="POST">
+			<div class="form-group">
+				<input class="form-control" type="text" name="title" placeholder="incident title" required="required">
+			</div>
+			<div class="form-group">
+				<textarea name="description" class="form-control" placeholder="description" required="required" rows="10"></textarea>
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="owner" required="required">
+					<option selected="selected">Select Employee</option>
+
+					<% users.reverse().forEach(function(user){%>
+					<% if (currentUser && (currentUser.department === user.department)){ %>
+					<% if (!currentUser._id.equals(user.id)) {%>
+					<option value="<%= user.name %> <%= user.lname %>"><%= user.name %> <%= user.lname %></option>
+					<%}%>
+					<%}%>
+					<% }); %>		
+				</select>	
+			</div>
+			<div class="form-group">
+				<button class="btn">CREATE INCIDENT</button>
+			</div>
+		</form>
+	</div>	
+</div>
+  </div>
+</div>
+
+<script>
+  // Get the modal
+var modal = document.getElementById('addIncidentModal');
+
+// Get the button that opens the modal
+var button = document.getElementById("add-incident-btn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("modal-close")[0];
+
+// When the user clicks the button, open the modal 
+button.onclick = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
 <% include ../partials/footer %>	
