@@ -16,7 +16,13 @@ const IncidentSchema = new mongoose.Schema({
 		username: String,
 		name: String,
 		lname: String,
+	},
+	deliverables:[
+	{
+		type: mongoose.Schema.Types.ObjectId,
+		ref:"Deliverable"
 	}
+	]
 });
 
 module.exports = mongoose.model("Incident", IncidentSchema);

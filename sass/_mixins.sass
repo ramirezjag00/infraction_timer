@@ -141,6 +141,20 @@
 .text-center
 	text-align: center
 
+.flex-container 
+	width: 100%
+	display: flex
+	justify-content: space-between
+	flex-wrap: wrap
+	box-sizing: border-box
+
+.incident-container-1, .incident-container-2, .incident-container-3 
+	padding: 1em
+
+.incident-desc-contents
+	margin-left: 8vw
+	margin-right: 8vw
+
 .container
 	margin-left: 8vw
 	margin-right: 8vw
@@ -246,6 +260,243 @@
 	text-decoration: none
 	color: #4CAF50
 
+.more-menu-container
+	position: relative
+	margin: 2em 2em 2em 0em
+
+.more-menu
+	width: 9em
+
+
+/* More Button / Dropdown Menu */
+
+.more-btn,
+.more-menu-btn 
+	background: none
+	border: 0 none
+	line-height: normal
+	overflow: visible
+	-webkit-user-select: none
+	-moz-user-select: none
+	-ms-user-select: none
+	width: 100%
+	text-align: left
+	outline: none
+	cursor: pointer
+
+
+.more-dot 
+	background-color: #6b6b6b
+	margin: 0 auto
+	display: inline-block
+	width: 7px
+	height: 7px
+	margin-right: 1px
+	border-radius: 50%
+	transition: background-color 0.3s
+
+
+.more-menu 
+	position: absolute
+	top: 100%
+	z-index: 0
+	float: left
+	padding: 10px 0
+	margin-top: 9px
+	background-color: #fff
+	border: 1px solid #ccd8e0
+	border-radius: 4px
+	box-shadow: 1px 1px 3px rgba(0,0,0,0.25)
+	opacity: 0
+	-webkit-transform: translate(0, 15px) scale(.95)
+	transform: translate(0, 15px) scale(.95)
+	transition: transform 0.1s ease-out, opacity 0.1s ease-out
+	pointer-events: none
+
+
+.more-menu-caret 
+	position: absolute
+	top: -10px
+	right: 65px
+	width: 18px
+	height: 10px
+	float: left
+	overflow: hidden
+
+
+.more-menu-caret-outer,
+.more-menu-caret-inner 
+	position: absolute
+	display: inline-block
+	margin-left: -1px
+	font-size: 0
+	line-height: 1
+
+
+.more-menu-caret-outer 
+	border-bottom: 10px solid #c1d0da
+	border-left: 10px solid transparent
+	border-right: 10px solid transparent
+	height: auto
+	left: 0
+	top: 0
+	width: auto    
+
+
+.more-menu-caret-inner 
+	top: 1px
+	left: 1px
+	border-left: 9px solid transparent
+	border-right: 9px solid transparent
+	border-bottom: 9px solid #fff
+
+
+.more-menu-items 
+	margin: 0
+	list-style: none
+	padding: 0
+
+
+.more-menu-item 
+	display: block
+
+
+.more-menu-btn 
+	min-width: 100%
+	color: #303030
+	cursor: pointer
+	display: block
+	font-size: 13px
+	line-height: 18px
+	padding: 5px 20px
+	position: relative
+	white-space: nowrap
+	text-decoration: none
+	font-family: Raleway, sans-serif
+
+
+.more-menu-item:hover 
+	background-color: #4CAF50
+
+
+.more-menu-item:hover .more-menu-btn 
+	color: #fff
+
+
+.more-btn:hover .more-dot,
+.show-more-menu .more-dot 
+	background-color: #303030
+
+
+.show-more-menu .more-menu 
+	opacity: 1
+	-webkit-transform: translate(-50px, 0) scale(1)
+	transform: translate(-50px, 0) scale(1)
+	pointer-events: auto
+
+.incidents-view-link
+	text-decoration: none
+	font-size: 80%
+	color: #303030
+
+.incidents-view-link:hover
+	color: #4CAF50
+
+/* The Modal (background) */
+.modal 
+	display: none
+	position: fixed
+	z-index: 1
+	padding-top: 100px
+	left: 0
+	top: 0
+	width: 100%
+	height: 100%
+	overflow: hidden /* "auto" scroll if needed */
+	background-color: rgb(0,0,0) /* Fallback color */
+	background-color: rgba(0,0,0,0.4) /* Black w/ opacity */
+
+/* Modal Content */
+.modal-content 
+	background-color: #fefefe
+	margin: auto
+	padding: 20px
+	border: 1px solid #888
+	width: 70em
+
+/* The Close Button */
+.modal-close 
+	color: #aaaaaa
+	float: right
+	font-size: 28px
+	font-weight: bold
+
+.modal-close:hover,
+.modal-close:focus 
+	color: #000
+	text-decoration: none
+	cursor: pointer
+
+.incident-deli-container
+	text-align: center
+
+.deliverable-form
+	display: flex
+	flex-direction: row
+	justify-content: center
+	margin: 3em
+
+.btn-add
+	width: 3em
+	height: 2.2em
+	padding: 1px
+	border: 1px solid #5cb85c
+	background-color: #5cb85c
+	transition: 0.3s
+	border-radius: 3px
+
+.btn-add:hover
+	background-color: transparent
+	color: #5cb85c
+	border: 1px solid #5cb85c
+	cursor: pointer
+
+.deliverable-control
+	width: 30vw
+	height: 2em
+	outline: none
+	border: 1px solid #dfdfdf
+	border-radius: 3px	
+
+.deliverable-control:focus
+	box-shadow: 0 0 5px rgba(92, 184, 92, 1)
+	border: 1px solid rgba(92, 184, 92, 1)
+
+.more-link 
+	background-color: #6b6b6b
+	margin: 0 auto
+	display: block
+	width: 5px
+	height: 5px
+	margin-right: 1px
+	border-radius: 50%
+	transition: background-color 0.3s
+
+.more-link-container
+	background: none
+	border: 0 none
+	line-height: normal
+	overflow: visible
+	-webkit-user-select: none
+	-moz-user-select: none
+	-ms-user-select: none
+	width: 100%
+	text-align: left
+	outline: none
+	cursor: pointer
+
+.more-link-container:hover .more-link,
+	background-color: #303030
 
 /* MIXINS */
 

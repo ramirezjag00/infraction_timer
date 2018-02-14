@@ -8,22 +8,21 @@
 				<input class="form-control" type="text" name="title" placeholder="incident title" required="required">
 			</div>
 			<div class="form-group">
-        		<textarea name="description" class="form-control" placeholder="description" required="required" rows="10"></textarea>
-      		</div>
+				<textarea name="description" class="form-control" placeholder="description" required="required" rows="10"></textarea>
+			</div>
 			<div class="form-group">
 				<select class="form-control" name="owner" required="required">
 					<option selected="selected">Select Employee</option>
 
 					<% users.reverse().forEach(function(user){%>
-						<% if (currentUser && (currentUser.department === user.department)){ %>
-							<% if (!currentUser._id.equals(user.id)) {%>
-								<option value="<%= user.name %> <%= user.lname %>"><%= user.name %> <%= user.lname %></option>
-							<%}%>
-						<%}%>
+					<% if (currentUser && (currentUser.department === user.department)){ %>
+					<% if (!currentUser._id.equals(user.id)) {%>
+					<option value="<%= user.name %> <%= user.lname %>"><%= user.name %> <%= user.lname %></option>
+					<%}%>
+					<%}%>
 					<% }); %>		
 				</select>	
 			</div>
-			
 			<div class="form-group">
 				<button class="btn">CREATE INCIDENT</button>
 			</div>
