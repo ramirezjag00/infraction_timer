@@ -24,7 +24,7 @@ router.post("/register", function (req, res){
 		newUser.isAuthAccount = true;
 	User.register(newUser, req.body.password, function(err, user){
 		if(err) {
-			req.flash("error", "You are not authorized to register, please call IT Helpdesk");
+			req.flash("error", err.message);
 			return res.render("register");
 		}
 		passport.authenticate("local")(req, res, function(){
@@ -34,7 +34,7 @@ router.post("/register", function (req, res){
 	});
 	} else {
 		res.render("register");
-		req.flash("error", "You are not authorized to register, please call IT Helpdesk");
+		req.flash("error", err.message);
 	}
 });
 

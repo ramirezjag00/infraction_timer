@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 	<link rel="stylesheet" type="text/css" href="/stylesheets/app.css">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
@@ -21,6 +22,18 @@
 		</div>
 		<nav class="nav-menu">
 			<ul>
+				<% if(currentUser){ %>
+					<li><form class="form-inline formSearch" action="/incidents" method="GET">
+						<div class="input-group">
+							<input type="text" class="form-control" name="search" placeholder="Search incident title...">
+							<div class="input-group-btn">
+								<button class="btn btn-default" type="submit">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</button>
+							</div>
+						</div>
+					</form></li>
+					<% } %>
 				<% if(!currentUser){ %>
 					<li><a href="/login">Log In</a></li>
 					<li><a href="/register">Sign Up</a></li>
@@ -35,12 +48,12 @@
 	</header>
 	<div class="container">
 		<% if (error && error.length > 0){%>
-		<div class="alert index-header-text">
+		<div class="alert text-center">
 			<%= error %>
 		</div> 
 		<% } %>
 		<% if (success && success.length > 0){%>
-		<div class="alert success index-header-text">
+		<div class="alert success text-center">
 			<%= success %>	
 		</div>
 		<% } %>
