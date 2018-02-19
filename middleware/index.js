@@ -18,7 +18,7 @@ middlewareObj.checkIncidentOwnership = (req,res,next) => {
 				if(err){
 				res.redirect("back");
 				} else {
-				if(foundIncident.createdBy.id.equals(req.user._id)){
+				if(foundIncident.owner === req.user.name+" "+req.user.lname || foundIncident.createdBy.id.equals(req.user._id)){
 					next();
 				} else {
 					res.redirect("back");
@@ -30,23 +30,23 @@ middlewareObj.checkIncidentOwnership = (req,res,next) => {
 	}
 }
 
-middlewareObj.checkDeliverableOwnership = (req,res,next) => {
-		if(req.isAuthenticated()){
-			Deliverable.findById(req.params.deliverable_id, (err, foundDeliverable) => {
-				if(err){
-				res.redirect("back");
-				} else {
-					//does user own the deliverable?
-				if(foundDeliverable.owner.id.equals(req.user._id)){
-					next();
-				} else {
-					res.redirect("back");
-				}
-				}
-			});
-	} else {
-		res.redirect("back");
-	}
-} 
+// middlewareObj.checkDeliverableOwnership = (req,res,next) => {
+// 		if(req.isAuthenticated()){
+// 			Deliverable.findById(req.params.deliverable_id, (err, foundDeliverable) => {
+// 				if(err){
+// 				res.redirect("back");
+// 				} else {
+// 					//does user own the deliverable?
+// 				if(foundDeliverable.owner.id.equals(req.user._id)){
+// 					next();
+// 				} else {
+// 					res.redirect("back");
+// 				}
+// 				}
+// 			});
+// 	} else {
+// 		res.redirect("back");
+// 	}
+// } 
 
 module.exports = middlewareObj;

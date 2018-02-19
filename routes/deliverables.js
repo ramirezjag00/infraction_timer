@@ -4,36 +4,38 @@ const Incident = require("../models/incident");
 const Deliverable = require("../models/deliverable");
 const middleware = require("../middleware");
 
-//deliverables new
-router.get("/", middleware.isLoggedIn, function(req, res){
-		//find incident by id
-		Incident.findById(req.params.id, function(err,incident){
-			if(err){
-				console.log(err);
-			} else {
-				res.render("/incidents/"+incident._id, {incident: incident});
-			}
-		});
-});
+// //deliverables get
+// router.get("/", middleware.checkIncidentOwnership, function(req, res){
+// 		//find incident by id
+// 		Incident.findById(req.params.id, function(err,incident){
+// 			if(err){
+// 				req.flash('error', 'Incident was not found');
+//      			res.redirect('back');
+// 			} else {
+// 				res.render("/incidents/"+incident._id, {incident: incident});
+// 			}
+// 		});
+// });
 
 //deliverables create
-router.post("/", middleware.isLoggedIn, function(req,res){
+router.post("/", middleware.checkIncidentOwnership, function(req,res){
 	//lookup incident using ID
 	Incident.findById(req.params.id, function(err, incident){
 		if(err){
-			console.log(err);
+			req.flash('error', 'Incident was not found');
 			res.redirect("/incidents");
 		} else {
 			//create new deliverable
 			Deliverable.create(req.body.deliverable, function(err, deliverable){
 				if(err){
-					console.log(err);
+					req.flash('error', 'Deliverable could not be created');
+          			res.redirect('/incidents');
 				} else {
 					//add username and id to deliverable
-					deliverable.author.id = req.user._id;
-					deliverable.author.username = req.user.username;
-					deliverable.author.name = req.user.name;
-					deliverable.author.lname = req.user.lname;
+					deliverable.owner.id = req.user._id;
+					deliverable.owner.username = req.user.username;
+					deliverable.owner.name = req.user.name;
+					deliverable.owner.lname = req.user.lname;
 					//save deliverable
 					deliverable.save();
 					incident.deliverables.push(deliverable);
@@ -44,22 +46,23 @@ router.post("/", middleware.isLoggedIn, function(req,res){
 		}
 	});
 });
-//////////////////////////////
 //deliverables edit route
-router.get("/", middleware.checkDeliverableOwnership, function(req,res){
+router.get("/deliverables/:deliverable_id/edit", middleware.checkIncidentOwnership, function(req,res){
 	Deliverable.findById(req.params.deliverable_id, function(err, foundDeliverable){
 		if(err){
+			req.flash('error', 'Deliverable was not found');
 			res.redirect("back");
 		} else {
-			res.render("/incidents/"+incident._id, { incident_id: req.params.id, deliverable: foundDeliverable});
+			res.render("deliverables/edit", { incident_id: req.params.id, deliverable: foundDeliverable});
 		}
 	});
 });
 
 //deliverable update route
-router.put("/", middleware.checkDeliverableOwnership, function(req,res){
-	Deliverable.findByIdAndUpdate(req.params.deliverable_id, req.body.deliverable, function(err, updatedDeliverable){
+router.put("/deliverables/:deliverable_id", middleware.checkIncidentOwnership, function(req,res){
+	Deliverable.findByIdAndUpdate(req.params.deliverable_id, req.body.deliverable, function(err){
 		if (err){
+			req.flash('error', 'Deliverable was not found');
 			res.redirect("back");
 		} else {
 			res.redirect("/incidents/"+ req.params.id);
@@ -68,14 +71,14 @@ router.put("/", middleware.checkDeliverableOwnership, function(req,res){
 });
 
 //deliverable destroy route
-router.delete("/:deliverable_id", middleware.checkDeliverableOwnership, function(req,res){
+router.delete("/deliverables/:deliverable_id", middleware.checkIncidentOwnership, function(req,res){
 	Deliverable.findByIdAndRemove(req.params.deliverable_id, function(err){
 		if(err){
+			req.flash('error', 'Deliverable was not found');
 			res.redirect("back");
 		} else {
-			res.redirect("/incidents/"+req.params.id);
+			res.redirect("/incidents/"+ req.params.id);
 		}
 	});
 });
-//////////////////////////////
 module.exports = router;
