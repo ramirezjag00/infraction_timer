@@ -7,22 +7,21 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 //REQUIRING MODELS
-// const Deliverable = require("./models/deliverable");
+const Deliverable = require("./models/deliverable");
 const Incident = require("./models/incident");
 const User = require("./models/user");
+const Comment = require("./models/comment");
 const methodOverride = require("method-override");
 const expressSanitizer = require("express-sanitizer");
-
-
-
 
 //REQUIRING ROUTES
 const incidentRoutes = require("./routes/incidents");
 const indexRoutes = require("./routes/index");
-// const deliverableRoutes = require("./routes/deliverables");
+const deliverableRoutes = require("./routes/deliverables");
+const commentRoutes = require("./routes/comments");
 
 //APP CONFIG
-mongoose.connect("mongodb://localhost/infraction_timer");
+mongoose.connect("mongodb://localhost/infraction_timer8");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -53,7 +52,8 @@ app.use(function(req,res,next) {
 //ROUTES APP CONFIG
 app.use("/", indexRoutes);
 app.use("/incidents", incidentRoutes);
-// app.use("/", deliverableRoutes);
+app.use("/incidents/:id", deliverableRoutes);
+app.use("/incidents/:id", commentRoutes);
 
 
 app.get("*", function(req, res) {

@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const IncidentSchema = new mongoose.Schema({
 	title: String,
 	date:{type:Date, default: new Date()},
-	deadline: {type:Date, default: new Date(+new Date() + 30*24*60*60*1000)},
+	deadline: Date,
 	status: {type:String, default: "Issued"},
 	description: String,
 	owner: String,
@@ -16,7 +16,13 @@ const IncidentSchema = new mongoose.Schema({
 		username: String,
 		name: String,
 		lname: String,
+	},
+	deliverables:[
+	{
+		type: mongoose.Schema.Types.ObjectId,
+		ref:"Deliverable"
 	}
+	]
 });
 
 module.exports = mongoose.model("Incident", IncidentSchema);
