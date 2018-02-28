@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 
-const IncidentSchema = new mongoose.Schema({
+const incidentSchema = new mongoose.Schema({
 	title: String,
 	date:{type:Date, default: new Date()},
 	deadline: Date,
@@ -25,4 +25,4 @@ const IncidentSchema = new mongoose.Schema({
 	]
 });
 
-module.exports = mongoose.model("Incident", IncidentSchema);
+module.exports = mongoose.model("Incident", incidentSchema);

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 
-const DeliverableSchema = new mongoose.Schema({
+const deliverableSchema = new mongoose.Schema({
 	description: String,
 	date: {type:Date, default: new Date()},
 	endDate: Date,
@@ -23,4 +23,4 @@ const DeliverableSchema = new mongoose.Schema({
 	]
 });
 
-module.exports = mongoose.model("Deliverable", DeliverableSchema);
+module.exports = mongoose.model("Deliverable", deliverableSchema);
