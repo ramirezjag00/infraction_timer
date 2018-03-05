@@ -1,14 +1,15 @@
 <% include ../partials/header %>
 <div class="container">
-	<h1 class="index-header-text">INFRACTION TIMER</h1>
+	<h1 class="text-center">INFRACTION TIMER</h1>
 	<div class="container-index">
 		<table class="table">
 			<col width="300">
 			<col width="500">
 			<col width="250">
-			<col width="150">
 			<col width="200">
 			<col width="200">
+			<col width="200">
+			<col width="50">
 			<tr>
 				<th>Incident Number</th>
 				<th>Title</th>
@@ -16,24 +17,133 @@
 				<th>Status</th>
 				<th>Created</th>
 				<th>Due</th>
+				<th></th>
 			</tr>
+
+			<div class="text-center">
+			<% if(noMatch !== null){ %>
+			<h2 class="text-center"><%= noMatch %></h2>
+			<% } %>
+			</div>
+
 			<% incidents.reverse().forEach(function(incident){%>
 			<% if(currentUser && (currentUser.name+" "+currentUser.lname === incident.owner || currentUser._id.equals(incident.createdBy.id))) {%>
 			<tr class="text-center">
 				<td><a href="incidents/<%= incident._id %>" class="incident-link"><%=incident._id%></a></td>
 				<td><a href="incidents/<%= incident._id %>"  class="incident-link"><%=incident.title%></a></td>
 				<td><%=incident.owner%></td>
-				<td><%=incident.status%></td>
-				<td><%=incident.date.toDateString().replace(/^\S+\s/,'')%></td>
-				<td><%=incident.deadline.toDateString().replace(/^\S+\s/,'')%></td>
-				
-			</tr>
-			<% } %>
-			<% }); %>
-		</table>
-	</div>	
-</div>
-<% if(currentUser && (currentUser.role === "manager")) {%>
-<div class="btn-incident"><a href="/incidents/new">+</a></div>
-<% } %>
+				<td style="color:
+				<% if (incident.status === "Issued") { %>
+					#d9534f
+					<% } else if(incident.status === "Change Request") { %>
+						#f0ad4e	
+						<% } else { %>
+							#337ab7
+							<% } %>
+							;">
+							<%=incident.status%>
+
+						</td>
+						<td><%=incident.date.toDateString().replace(/^\S+\s/,'')%></td>
+						<td><%=incident.deadline.toDateString().replace(/^\S+\s/,'')%></td>
+						 <% if(currentUser && (currentUser._id.equals(incident.createdBy.id))) { %>
+						<td>
+							<form action="/incidents/<%=incident._id%>?_method=DELETE" method="POST">
+								<button class="btn-del-deliverable" onclick="return confirmDel()"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+							</form>
+						</td>
+						<% } %>
+					</tr>
+					<% } %>
+					<% }); %>
+				</table>
+			</div>	
+		</div>
+		<% if(currentUser && (currentUser.role === "manager")) {%>
+		<div class="btn-incident"><a id="add-incident-btn">+</a></div>
+		<% } %>
+
+		<!-- The Modal -->
+		<div id="addIncidentModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<span class="modal-close">&times;</span>
+				<div class="container">
+					<h1 class="text-center">Create an Incident</h1>
+					<div class="form-container">
+						<form action="/incidents" method="POST">
+							<div class="form-group">
+								<input class="form-control" type="text" name="title" placeholder="incident title" maxlength="40" required="required">
+							</div>
+							<div class="form-group">
+								<textarea name="description" class="form-control" placeholder="description" maxlength="250" required="required" rows="10"></textarea>
+								<div class="character_counter">
+									<span id="chars">250</span>/250 characters remaining
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<input class="form-control" type="date" name="deadline" required="required">
+							</div>
+							<div class="form-group">
+								<select class="form-control" name="owner" required="required">
+									<option selected="selected">Select Employee</option>
+
+									<% users.reverse().forEach(function(user){%>
+									<% if (currentUser && (currentUser.department === user.department)){ %>
+									<% if (!currentUser._id.equals(user.id)) {%>
+									<option value="<%= user.name %> <%= user.lname %>"><%= user.name %> <%= user.lname %></option>
+									<%}%>
+									<%}%>
+									<% }); %>		
+								</select>	
+							</div>
+							<div class="form-group">
+								<button class="btn">CREATE INCIDENT</button>
+							</div>
+						</form>
+					</div>	
+				</div>
+			</div>
+		</div>
+
+		<script>
+  // Get the modal
+  var modal = document.getElementById('addIncidentModal');
+
+// Get the button that opens the modal
+var button = document.getElementById("add-incident-btn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("modal-close")[0];
+
+// When the user clicks the button, open the modal 
+button.onclick = function() {
+	modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+	modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+	if (event.target == modal) {
+		modal.style.display = "none";
+	}
+}
+</script>
+<script>
+	function confirmDel()
+	{
+		var x = confirm("Are you sure?");
+		if (x){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+</script>
 <% include ../partials/footer %>	
