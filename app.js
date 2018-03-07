@@ -42,7 +42,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.use(function(req,res,next) {
+app.use((req,res,next) => {
 	res.locals.currentUser = req.user;
 	res.locals.error = req.flash("error");
 	res.locals.success = req.flash("success");
@@ -56,7 +56,7 @@ app.use("/incidents/:id", deliverableRoutes);
 app.use("/incidents/:id", commentRoutes);
 
 
-app.get("*", function(req, res) {
+app.get("*", (req, res) => {
     res.send("You are trying to access a page that does not exist.");
 });
 

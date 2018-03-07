@@ -9,13 +9,12 @@ const middleware = require("../middleware");
 
 //GET ROUTE
 
-
-router.get("/", middleware.isLoggedIn, function(req,res){
-	var noMatch = null;
+router.get("/", middleware.isLoggedIn, (req,res) => {
+	const noMatch = null;
 	if(req.query.search){
 		const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-		Incident.find({title: regex}, function(err, allIncidents){
-			User.find({}, function(err, allUsers){
+		Incident.find({title: regex}, (err, allIncidents) => {
+			User.find({}, (err, allUsers) => {
 			if(err){
 				res.redirect('back');
 			} else {
@@ -27,8 +26,8 @@ router.get("/", middleware.isLoggedIn, function(req,res){
 			});         
 		});
 	} else {
-		Incident.find({}, function(err, allIncidents){
-			User.find({}, function(err, allUsers){
+		Incident.find({}, (err, allIncidents) => {
+			User.find({}, (err, allUsers) => {
 				if(err){
 					res.redirect('back');
 				} else {
@@ -39,9 +38,8 @@ router.get("/", middleware.isLoggedIn, function(req,res){
 	}
 });
 
-
 //CREATE ROUTE
-router.post("/", middleware.isLoggedIn, function(req,res) {
+router.post("/", middleware.isLoggedIn, (req,res) => {
 	const title = req.body.title;
 	const status = req.body.status;
 	const description = req.body.description;
@@ -56,7 +54,7 @@ router.post("/", middleware.isLoggedIn, function(req,res) {
 	
 	const newIncident = {title: title, status: status, description: description, owner: owner, createdBy: createdBy, deadline: deadline}
 	//create a new incident and save to DB
-	Incident.create(newIncident, function(err, newlyCreated) {
+	Incident.create(newIncident, (err, newlyCreated) => {
 		if (err) {
 			req.flash('error', 'Incident could not be created');
 			res.redirect('back');
@@ -68,22 +66,10 @@ router.post("/", middleware.isLoggedIn, function(req,res) {
 	});
 });
 
-// NEW ROUTE
-
-// router.get("/new", middleware.isLoggedIn, function(req,res) {
-// 	User.find({}, function(err, allUsers){
-// 		if(err) {  
-// 			console.log(err);
-// 		} else {
-// 			res.render("incidents/new", {users: allUsers});
-// 		}
-// 	});
-// });
-
 //SHOW - RESTFUL ROUTE
-router.get("/:id", middleware.checkIncidentOwnership, function(req,res) {
+router.get("/:id", middleware.checkIncidentOwnership, (req,res) => {
 	//find the Incident with the provided ID
-	Incident.findById(req.params.id).populate("deliverables").exec(function(err,foundIncident){
+	Incident.findById(req.params.id).populate("deliverables").exec((err,foundIncident) => {
 		if(err){
 			req.flash('error', 'Incident was not found');
 			res.redirect('back');
@@ -93,21 +79,9 @@ router.get("/:id", middleware.checkIncidentOwnership, function(req,res) {
 	});
 });
 
-// //update requestToChangeStatus Route
-// router.put("/:id", middleware.isLoggedIn, function(req,res){
-// 	Incident.findByIdAndUpdate(req.params.id, {$set:{"requestToChangeStatus":"true"}}, function(err, updatedIncident){
-// 		if(err){
-// 			req.flash("error", err.message);
-// 		} else {
-// 			req.flash("success", "Your request to change incident status has been sent!");
-// 			res.redirect("/incidents/" + req.params.id);
-// 		}
-// 	});
-// });
-
 //UPDATE ROUTE
-router.put("/:id", middleware.checkIncidentOwnership, function(req,res) {
-	Incident.findByIdAndUpdate(req.params.id, req.body.incident, function(err, updatedIncident) {
+router.put("/:id", middleware.checkIncidentOwnership, (req,res) => {
+	Incident.findByIdAndUpdate(req.params.id, req.body.incident, (err, updatedIncident) => {
 		if(err) {
 			req.flash('error', 'Incident was not found');
 			res.redirect("/incidents");
@@ -119,8 +93,8 @@ router.put("/:id", middleware.checkIncidentOwnership, function(req,res) {
 });
 
 //DESTROY ROUTE
-router.delete("/:id", middleware.checkIncidentOwnership, function(req,res){
-	Incident.findByIdAndRemove(req.params.id, function(err){
+router.delete("/:id", middleware.checkIncidentOwnership, (req,res) => {
+	Incident.findByIdAndRemove(req.params.id, (err) => {
 		if(err){
 			req.flash('error', 'Incident was not found');
 			res.redirect('back');
@@ -132,7 +106,7 @@ router.delete("/:id", middleware.checkIncidentOwnership, function(req,res){
 });
 
 //def for search
-function escapeRegex(text) {
+const escapeRegex = (text) => {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
 

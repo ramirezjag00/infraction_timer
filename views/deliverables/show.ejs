@@ -125,7 +125,7 @@
         <% } %>
         </div>
         <!--  -->
-        <% deliverable.comments.forEach(function(comment){ %>
+        <% deliverable.comments.forEach((comment) =>{ %>
         	<div><p class="comments-container"><strong
           style="color:
         <% if (comment.author.name+" "+comment.author.lname !== currentUser.name+" "+currentUser.lname) { %>
@@ -140,13 +140,13 @@
 
       </div>
       <script type="text/javascript">
-        var countDownDate = new Date("<%= deliverable.endDate%>").getTime();
-        var countdownfunction = setInterval(function() {
-          var now = new Date().getTime();
-          var distance = countDownDate - now;
-          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const countDownDate = new Date("<%= deliverable.endDate%>").getTime();
+        const countdownfunction = setInterval(() => {
+          const now = new Date().getTime();
+          const distance = countDownDate - now;
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
           document.getElementById("timer").innerHTML =
           days + "d " + hours + "h " + minutes + "m";
           if (distance < 0) {
@@ -156,11 +156,11 @@
         }, 1000);
       </script>
       <script type="text/javascript">
-        var el = document.querySelector('.more');
-        var btn = el.querySelector('.more-btn');
-        var menu = el.querySelector('.more-menu');
-        var visible = false;
-        function showMenu(e) {
+        const el = document.querySelector('.more');
+        const btn = el.querySelector('.more-btn');
+        const menu = el.querySelector('.more-menu');
+        let visible = false;
+        const showMenu = (e) => {
           e.preventDefault();
           if (!visible) {
             visible = true;
@@ -169,7 +169,7 @@
             document.addEventListener('click', hideMenu, false);
           }
         }
-        function hideMenu(e) {
+        const hideMenu = (e) => {
           if (btn.contains(e.target)) {
             return;
           }
@@ -184,30 +184,30 @@
       </script>
       <script>
   // Get the modal
-  var modal = document.getElementById('editIncidentModal');
+  const modal = document.getElementById('editIncidentModal');
 // Get the button that opens the modal
-var button = document.getElementById("edit-incident-btn");
+const button = document.getElementById("edit-incident-btn");
 // Get the <span> element that closes the modal
-var span = document.getElementsByClassName("modal-close")[0];
+const span = document.getElementsByClassName("modal-close")[0];
 // When the user clicks the button, open the modal 
-button.onclick = function() {
+button.onclick = () => {
   modal.style.display = "block";
 }
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
+span.onclick = () => {
   modal.style.display = "none";
 }
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
+window.onclick = (event) => {
   if (event.target == modal) {
     modal.style.display = "none";
   }
 }
 </script>
 <script>
-  function confirmDel()
+  const confirmDel = () =>
   {
-    var x = confirm("Are you sure?");
+    const x = confirm("Are you sure?");
     if (x){
       return true;
     }

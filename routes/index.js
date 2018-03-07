@@ -8,26 +8,24 @@ const Incident = require("../models/incident");
 
 //ROOT ROUTE
 
-router.get("/", function(req, res) {
-	res.redirect("/incidents");
-});
+router.get("/", (req, res) =>
+	res.redirect("/incidents"));
 
 //register from route
-router.get("/register", function(req, res) {
-	res.render("register");
-});
+router.get("/register", (req, res) =>
+	res.render("register"));
 
 //handle sign up logic
-router.post("/register", function (req, res){
+router.post("/register", (req, res) => {
 	const newUser = new User({ name: req.body.name, lname: req.body.lname, username: req.body.username, department: req.body.department, manager: req.body.manager, position: req.body.position, role: req.body.role, isAuthAccount: req.body.adminCode });
 	if(req.body.adminCode === "ilovescic"){
 		newUser.isAuthAccount = true;
-	User.register(newUser, req.body.password, function(err, user){
+	User.register(newUser, req.body.password, (err, user) => {
 		if(err) {
 			req.flash("error", err.message);
 			return res.render("register");
 		}
-		passport.authenticate("local")(req, res, function(){
+		passport.authenticate("local")(req, res, () => {
 			req.flash("success", `Welcome to Infraction Timer ${user.name} ${user.lname}!`);
 			res.redirect("/incidents");
 		});
@@ -39,9 +37,8 @@ router.post("/register", function (req, res){
 });
 
 //log in route
-router.get("/login", function (req, res){
-	res.render("login");
-});
+router.get("/login", (req, res) =>
+	res.render("login"));
 
 //handling log in logic
 router.post("/login", passport.authenticate("local", {
@@ -52,7 +49,7 @@ successRedirect: "/incidents",
 }), function(req, res){});
 
 //log out route
-router.get("/logout", function(req, res) {
+router.get("/logout", (req, res) => {
 	req.logout();
 	req.flash("success", "Successfully logged out!");
 	res.redirect("/login");
