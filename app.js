@@ -21,7 +21,7 @@ const deliverableRoutes = require("./routes/deliverables");
 const commentRoutes = require("./routes/comments");
 
 //APP CONFIG
-mongoose.connect("mongodb://localhost/infraction_timer11");
+mongoose.connect("mongodb://localhost/infraction_timer12");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));

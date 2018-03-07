@@ -73,7 +73,7 @@
             </div>
           </div>
           <%}%>
-           <div><h3><a href="/incidents/<%= incident_id %>" class="view-incident-link">View Incident</a></h3></div>
+           <div><h3><a href="/incidents/<%= incident_id %>" class="incidents-view-link">View Incident</a></h3></div>
         </div>
         <!--  -->
       </div>
@@ -126,7 +126,14 @@
         </div>
         <!--  -->
         <% deliverable.comments.forEach(function(comment){ %>
-        	<div><p class="comments-container"><strong><%= comment.author.name%> <%= comment.author.lname%></strong> <%= comment.text%></p></div>
+        	<div><p class="comments-container"><strong
+          style="color:
+        <% if (comment.author.name+" "+comment.author.lname !== currentUser.name+" "+currentUser.lname) { %>
+          #616161
+          <% } else {%>
+            #303030
+            <% } %>
+            ;"><%= comment.author.name%> <%= comment.author.lname%></strong> <%= comment.text%></p></div>
 		<% }); %>
 
 
