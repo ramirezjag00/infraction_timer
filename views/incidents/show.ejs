@@ -1,31 +1,266 @@
-<% include ../partials/header %>
+<% include ../partials/header %> 
 <div class="container">
-	<h1 class="text-center"><%= incident.title %></h1>
-	<h4 class="text-center">Incident # <%= incident._id %></h4>
-	<h4 class="text-center">Owner: <%= incident.owner %></h4>
-	<div class="text-center"><h4>Description: </h4><%= incident.description %></div>
-	<div class="text-center"><h4>Date:</h4> <%= incident.date.toDateString().replace(/^\S+\s/,'') %> - <%= incident.deadline.toDateString().replace(/^\S+\s/,'') %></div>
-	<div class="text-center"><h4>Time Remaining: </h4><span id="demo"></span></div>
+  <div class="flex-container">
+    <div class="incident-container-1">
+      <div><h2>Title: </h2><%= incident.title %></div>
+      <div><h3>Incident # </h3><%= incident._id %></div>
+      <div>
+        <h3>Status: </h3>
+        <span style="color:
+        <% if (incident.status === "Issued") { %>
+          #d9534f
+          <% } else if(incident.status === "Change Request") { %>
+            #f0ad4e 
+            <% } else { %>
+              #337ab7
+              <% } %>
+              ;">
+              <%=incident.status%>
+        </span>
+      </div>
+    </div>
+        <div class="incident-container-2">
+          <div><h3>Owner: </h3><%= incident.owner %></div>
+          <div><h3>Created By: </h3><%= incident.createdBy.name %> <%= incident.createdBy.lname %> </div>
+          <div> <h3>Time Remaining: </h3><span id="timer"></span> </div>
+        </div>
+        <div class="incident-container-3">
+          <% if(currentUser && ((currentUser.name+" "+currentUser.lname === incident.owner && incident.status ==="Issued") || currentUser._id.equals(incident.createdBy.id))) {%>
+          <div class="more-menu-container">
+            <div class="more">
+              <button id="more-btn" class="more-btn">
+                <span class="more-dot"></span>
+                <span class="more-dot"></span>
+                <span class="more-dot"></span>
+              </button>
+              <div class="more-menu">
+                <div class="more-menu-caret">
+                  <div class="more-menu-caret-outer"></div>
+                  <div class="more-menu-caret-inner"></div>
+                </div>
+                <ul class="more-menu-items" tabindex="-1" role="menu" aria-labelledby="more-btn" aria-hidden="true">
+                  <% if(currentUser && currentUser._id.equals(incident.createdBy.id)) {%>
+                  <% if (Date.now() < incident.deadline) { %>
+                  <li class="more-menu-item" role="presentation">
+                    <button id="edit-incident-btn" class="more-menu-btn" role="menuitem">Edit Incident</button>
+                  </li>
+                  <%}%>
+                  <li class="more-menu-item" role="presentation">
+                    <form action="/incidents/<%= incident._id %>?_method=DELETE" method="POST">
+                      <button class="more-menu-btn" role="menuitem" onclick="return confirmDel()">Delete
+                      </button>
+                    </form>
+                  </li>
+                  <%}%>
+                  <% if(currentUser && (currentUser.name+" "+currentUser.lname === incident.owner && incident.status ==="Issued")) { %>
+                  <li class="more-menu-item" role="presentation">
+                    <form action="/incidents/<%= incident._id %>?_method=PUT" method="POST">
+                      <div class="form-group" id="display-none">
+                        <select class="form-control" name="incident[status]" required="required">
+                          <option value="Change Request">Change Request</option>
+                        </select>
+                      </div>
+                      <button class="more-menu-btn" role="menuitem">Change Request
+                      </button>
+                    </form>
+                  </li>
+                  <%}%>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <%}%>
+          <div><h3>Date: </h3><%= incident.date.toDateString().replace(/^\S+\s/,'') %> </div>
+          <div><h3>End: </h3><%= incident.deadline.toDateString().replace(/^\S+\s/,'') %> </div>
+        </div>
+      </div>
 
-	<div class="text-center"><h4>Status: </h4><%= incident.status %></div>
-	
+      <!-- The Modal -->
+      <div id="editIncidentModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="modal-close">&times;</span>
+          <div class="container-modal">
+            <h1 class="text-center">Edit
+              <%= incident.title %>
+            </h1>
+            <div class="form-container-modal">
+              <form action="/incidents/<%= incident._id %>?_method=PUT" method="POST">
+                <div class="form-group">
+                  <input class="form-control" type="text" value="<%= incident.title %>" name="incident[title]" maxlength="50" required="required">
+                </div>
+                <div class="form-group">
+                  <textarea name="incident[description]" class="form-control" placeholder="description" maxlength="300" required="required" rows="10"><%= incident.description %></textarea>
+                  <div class="character-counter">
+                    <span id="chars">300</span>/300 characters remaining
+                  </div>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" name="incident[status]" required="required">
+                    <option value="Issued">Issued</option>
+                    <option value="Change Request">Change Request</option>
+                    <option value="Overturned">Overturned</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="date" name="incident[deadline]" value="<%=incident.deadline.toISOString().substring(0, 10)%>" required="required">
+                </div>
+                <div class="form-group">
+                  <button class="btn">SAVE</button>
+                </div>
+              </form>
+              <a href="/incidents" class="incidents-view-link">View Incidents</a>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- end modal -->
+      <div class="incident-desc-container">
+        <h1 class="text-center">Description</h1>
+        <div class="container"><%= incident.description %></div>
+      </div>
 
-</div>
-<script type="text/javascript">
-          var countDownDate = new Date("<%= incident.deadline%>").getTime();
-          var countdownfunction = setInterval(function() {
-            var now = new Date().getTime();
-            var distance = countDownDate - now;
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById("demo").innerHTML =
-              days + "d " + hours + "h " + minutes + "m";
-          
-            if (distance < 0) {
-              clearInterval(countdownfunction);
-              document.getElementById("demo").innerHTML = "0";
-            }
-          }, 1000);
-        </script>
+      <div class="text-center">
+        <h2 class="text-center">Deliverable</h2>
+        <% if(currentUser && currentUser._id.equals(incident.createdBy.id)) {%>
+        <form action="/incidents/<%= incident._id %>" method="POST" class="deliverable-form">
+          <div>
+            <button class="btn-add">ADD</button>
+          </div>
+          <div><input class="deliverable-control" type="text" placeholder="deliverable" name="deliverable[description]" maxlength="40" required="required">
+          </div>
+          <div>
+            <input class="deliverable-control-date" type="date" name="deliverable[endDate]" required="required">
+          </div>
+        </form>
+        <% } %>
+      </div>
+
+      <div class="deliverable-contents">
+        <table class="table">
+          <col width="450">
+          <col width="250">
+          <col width="250">
+          <col width="250">
+          <col width="250">
+          <col width="50">
+          <col width="50">
+
+          <tr>
+            <th>Description</th>
+            <th class="display-none">Created By</th>
+            <th class="display-none">Date</th>
+            <th class="display-none">End Date</th>
+            <th>Status</th>
+          </tr>
+          <% incident.deliverables.forEach(function(deliverable){ %>
+         
+          <tr class="text-center">
+            <td><a href="/incidents/<%=incident._id%>/deliverables/<%=deliverable._id%>" class="incident-link"><%=deliverable.description%></a></td>
+            <td class="display-none"><%=deliverable.owner.name%> <%=deliverable.owner.lname%></td>
+            <td class="display-none"><%=deliverable.date.toDateString().replace(/^\S+\s/,'')%></td>
+            <td class="display-none"><%=deliverable.endDate.toDateString().replace(/^\S+\s/,'')%></td>
+            <td style="color:
+            <% if (deliverable.status === "In Progress") { %>
+              #d9534f
+              <% } else { %>
+                #337ab7
+                <% } %>
+                ;">
+                <%=deliverable.status%>
+              </td>
+              <td class="display-none">
+                <a class="edit-del-container" href="/incidents/<%=incident._id%>/deliverables/<%=deliverable._id%>#comments-section">
+                  <i class="fa fa-comments-o" aria-hidden="true"></i>
+                </a>
+              </td>
+              <td class="display-none">
+                <form action="/incidents/<%=incident._id%>/deliverables/<%=deliverable._id%>?_method=DELETE" method="POST">
+                  <button class="btn-del-deliverable" onclick="return confirmDel()"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                </form>
+              </td>
+            </tr>
+           
+            <% }); %>
+          </table>
+        </div>  
+
+      </div>
+      <script type="text/javascript">
+        var countDownDate = new Date("<%= incident.deadline%>").getTime();
+        var countdownfunction = setInterval(function() {
+          var now = new Date().getTime();
+          var distance = countDownDate - now;
+          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          document.getElementById("timer").innerHTML =
+          days + "d " + hours + "h " + minutes + "m";
+          if (distance < 0) {
+            clearInterval(countdownfunction);
+            document.getElementById("timer").innerHTML = "0";
+          }
+        }, 1000);
+      </script>
+      <script type="text/javascript">
+        var el = document.querySelector('.more');
+        var btn = el.querySelector('.more-btn');
+        var menu = el.querySelector('.more-menu');
+        var visible = false;
+        function showMenu(e) {
+          e.preventDefault();
+          if (!visible) {
+            visible = true;
+            el.classList.add('show-more-menu');
+            menu.setAttribute('aria-hidden', false);
+            document.addEventListener('click', hideMenu, false);
+          }
+        }
+        function hideMenu(e) {
+          if (btn.contains(e.target)) {
+            return;
+          }
+          if (visible) {
+            visible = false;
+            el.classList.remove('show-more-menu');
+            menu.setAttribute('aria-hidden', true);
+            document.removeEventListener('click', hideMenu);
+          }
+        }
+        btn.addEventListener('click', showMenu, false);
+      </script>
+      <script>
+  // Get the modal
+  var modal = document.getElementById('editIncidentModal');
+// Get the button that opens the modal
+var button = document.getElementById("edit-incident-btn");
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("modal-close")[0];
+// When the user clicks the button, open the modal 
+button.onclick = function() {
+  modal.style.display = "block";
+}
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+<script>
+  function confirmDel()
+  {
+    var x = confirm("Are you sure?");
+    if (x){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+</script>
 <% include ../partials/footer %>
