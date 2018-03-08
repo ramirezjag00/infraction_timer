@@ -5,7 +5,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 	<link rel="stylesheet" type="text/css" href="/stylesheets/app.css">
-	<link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto|Raleway" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
@@ -21,26 +22,31 @@
 		</div>
 		<nav class="nav-menu">
 			<ul>
+				
 				<% if(!currentUser){ %>
-					<li><a href="/login">Log In</a></li>
-					<li><a href="/register">Sign Up</a></li>
-					<% } else { %>
-
-					<li><a href="#"><%= currentUser.name %> <%= currentUser.lname %></a></li>
-					<li><a href="#"><%= currentUser._id %></a></li>
-					<li><a href="/logout">Log Out</a></li>
-					<% } %>
+				<li><a href="/login">Log In</a></li>
+				<li><a href="/register">Sign Up</a></li>
+				<% } else { %>
+				<li><form class="form-search" action="/incidents" method="GET">
+					<input type="text" class="form-input-search" name="search" placeholder="Search incident title..."><button class="btn-search" type="submit">
+						<i class="fa fa-search" aria-hidden="true"></i>
+					</button>
+				</form></li>
+				<li><a href="#"><%= currentUser.name %> <%= currentUser.lname %></a></li>
+				<li><a href="#"><%= currentUser._id %></a></li>
+				<li><a href="/logout">Log Out</a></li>
+				<% } %>
 			</ul>
 		</nav>
 	</header>
 	<div class="container">
 		<% if (error && error.length > 0){%>
-		<div class="alert index-header-text">
+		<div class="alert text-center">
 			<%= error %>
 		</div> 
 		<% } %>
 		<% if (success && success.length > 0){%>
-		<div class="alert success index-header-text">
+		<div class="alert success text-center">
 			<%= success %>	
 		</div>
 		<% } %>

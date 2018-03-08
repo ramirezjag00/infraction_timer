@@ -1,0 +1,222 @@
+<% include ../partials/header %> 
+<div class="container">
+  <div class="flex-container">
+  	<!--  -->
+    <div class="incident-container-1">
+      <div><h2>Deliverable Description: </h2><%=deliverable.description%></div>
+     	<div><h3>Created By</h3><%=deliverable.owner.name%> <%=deliverable.owner.lname%></div>
+     	 <div>
+        <h3>Status: </h3>
+         <span style="color:
+        <% if (deliverable.status === "In Progress") { %>
+          #d9534f
+          <% } else if(deliverable.status === "Change Request") { %>
+            #f0ad4e 
+            <% } else { %>
+              #337ab7
+              <% } %>
+              ;">
+              <%=deliverable.status%>
+        </span>
+      </div>
+      </div>
+      <!--  -->
+      <div class="incident-container-2">
+          <div><h3>Date: </h3><%=deliverable.date.toDateString().replace(/^\S+\s/,'')%></div>
+          <div><h3>End Date: </h3><%=deliverable.endDate.toDateString().replace(/^\S+\s/,'')%></div>
+          <div> <h3>Time Remaining: </h3><span id="timer"></span> </div>
+      </div>
+      <!--  -->
+       <div class="incident-container-3">
+          <% if(currentUser && ((currentUser.name+" "+currentUser.lname !== deliverable.owner.name+" "+deliverable.owner.lname && deliverable.status ==="In Progress") || currentUser._id.equals(deliverable.owner.id))) {%>
+          <div class="more-menu-container">
+            <div class="more">
+              <button id="more-btn" class="more-btn">
+                <span class="more-dot"></span>
+                <span class="more-dot"></span>
+                <span class="more-dot"></span>
+              </button>
+              <div class="more-menu">
+                <div class="more-menu-caret">
+                  <div class="more-menu-caret-outer"></div>
+                  <div class="more-menu-caret-inner"></div>
+                </div>
+                <ul class="more-menu-items" tabindex="-1" role="menu" aria-labelledby="more-btn" aria-hidden="true">
+                  <% if(currentUser && currentUser._id.equals(deliverable.owner.id)) {%>
+                  <% if (Date.now() < deliverable.endDate) { %>
+                  <li class="more-menu-item" role="presentation">
+                    <button id="edit-incident-btn" class="more-menu-btn" role="menuitem">Edit Deliverable</button>
+                  </li>
+                  <%}%>
+                  <li class="more-menu-item" role="presentation">
+                    <form action="/incidents/<%=incident_id%>/deliverables/<%=deliverable._id%>?_method=DELETE" method="POST">
+                      <button class="more-menu-btn" role="menuitem" onclick="return confirmDel()">Delete
+                      </button>
+                    </form>
+                  </li>
+                  <%}%>
+                 <% if(currentUser && (currentUser.name+" "+currentUser.lname !== deliverable.owner.name+" "+deliverable.owner.lname && deliverable.status ==="In Progress")) { %>
+                  <li class="more-menu-item" role="presentation">
+                    <form action="/incidents/<%=incident_id%>/deliverables/<%=deliverable._id%>?_method=PUT" method="POST">
+                      <div class="form-group" id="display-none">
+                        <select class="form-control" name="deliverable[status]" required="required">
+                          <option value="Change Request">Change Request</option>
+                        </select>
+                      </div>
+                      <button class="more-menu-btn" role="menuitem">Change Request
+                      </button>
+                    </form>
+                  </li>
+                  <%}%>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <%}%>
+           <div><h3><a href="/incidents/<%= incident_id %>" class="incidents-view-link">View Incident</a></h3></div>
+        </div>
+        <!--  -->
+      </div>
+
+      <!-- The Modal -->
+      <div id="editIncidentModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="modal-close">&times;</span>
+          <div class="container-modal">
+            <h1 class="text-center">Edit
+              <%= deliverable.description %>
+            </h1>
+            <div class="form-container-modal">
+             <form action="/incidents/<%= incident_id %>/deliverables/<%= deliverable._id %>?_method=PUT" method="POST">
+			<div class="form-group">
+				<textarea name="deliverable[description]" class="form-control" placeholder="description" maxlength="50" required="required" rows="10"><%= deliverable.description %></textarea>
+			</div>
+			<div class="form-group">
+				<select class="form-control" name="deliverable[status]" required="required">
+					<option value="In Progress">In Progress</option>
+					<option value="Change Request">Change Request</option>
+					<option value="Completed">Completed</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<input class="form-control" type="date" name="deliverable[endDate]" value="<%=deliverable.endDate.toISOString().substring(0, 10)%>" required="required">
+			</div>
+			<div class="form-group">
+				<button class="btn">SAVE</button>
+			</div>
+		</form>
+              <a href="/incidents/<%= incident_id %>" class="incidents-view-link">View Incident</a>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- end modal -->
+	    <div class="text-center">
+        	<h2 class="text-center" id="comments-section">Comments</h2>
+        	 <% if(currentUser && ((currentUser.name+" "+currentUser.lname !== deliverable.owner.name+" "+deliverable.owner.lname) || currentUser._id.equals(deliverable.owner.id))) {%>
+        <form action="/incidents/<%=incident_id%>/deliverables/<%=deliverable._id%>" method="POST" class="deliverable-form">
+          <div>
+            <button class="btn-add">ADD</button>
+          </div>
+          <div><input class="deliverable-control" type="text" placeholder="comment" name="comment[text]" maxlength="250" required="required">
+          </div>
+        </form>
+        <% } %>
+        </div>
+        <!--  -->
+        <% deliverable.comments.forEach((comment) =>{ %>
+        	<div><div class="comments-container"><strong
+          style="color:
+        <% if (comment.author.name+" "+comment.author.lname !== currentUser.name+" "+currentUser.lname) { %>
+          #616161
+          <% } else {%>
+            #303030
+            <% } %>
+            ;"><%= comment.author.name%> <%= comment.author.lname%></strong> <%= comment.text%>
+            <p class="comment-createdAt-date"><%= moment(comment.createdAt).fromNow() %></p>
+          </div>
+          </div>
+		<% }); %>
+
+
+
+      </div>
+      <script type="text/javascript">
+        const countDownDate = new Date("<%= deliverable.endDate%>").getTime();
+        const countdownfunction = setInterval(() => {
+          const now = new Date().getTime();
+          const distance = countDownDate - now;
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          document.getElementById("timer").innerHTML =
+          days + "d " + hours + "h " + minutes + "m";
+          if (distance < 0) {
+            clearInterval(countdownfunction);
+            document.getElementById("timer").innerHTML = "0";
+          }
+        }, 1000);
+      </script>
+      <script type="text/javascript">
+        const el = document.querySelector('.more');
+        const btn = el.querySelector('.more-btn');
+        const menu = el.querySelector('.more-menu');
+        let visible = false;
+        const showMenu = (e) => {
+          e.preventDefault();
+          if (!visible) {
+            visible = true;
+            el.classList.add('show-more-menu');
+            menu.setAttribute('aria-hidden', false);
+            document.addEventListener('click', hideMenu, false);
+          }
+        }
+        const hideMenu = (e) => {
+          if (btn.contains(e.target)) {
+            return;
+          }
+          if (visible) {
+            visible = false;
+            el.classList.remove('show-more-menu');
+            menu.setAttribute('aria-hidden', true);
+            document.removeEventListener('click', hideMenu);
+          }
+        }
+        btn.addEventListener('click', showMenu, false);
+      </script>
+      <script>
+  // Get the modal
+  const modal = document.getElementById('editIncidentModal');
+// Get the button that opens the modal
+const button = document.getElementById("edit-incident-btn");
+// Get the <span> element that closes the modal
+const span = document.getElementsByClassName("modal-close")[0];
+// When the user clicks the button, open the modal 
+button.onclick = () => {
+  modal.style.display = "block";
+}
+// When the user clicks on <span> (x), close the modal
+span.onclick = () => {
+  modal.style.display = "none";
+}
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = (event) => {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+<script>
+  const confirmDel = () =>
+  {
+    const x = confirm("Are you sure?");
+    if (x){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+</script>
+<% include ../partials/footer %>
